@@ -68,13 +68,13 @@ create table bookings (
 	foreign key (account_id) references accounts (id)
 );
 
-	create table payment_types (
-		id int auto_increment primary key,
-		name varchar(255) not null unique,
-		payment_phone varchar(255) not null,
-		created_at datetime default CURRENT_TIMESTAMP,
-		updated_at datetime default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
-	);
+create table payment_types (
+	id int auto_increment primary key,
+	name varchar(255) not null unique,
+	payment_phone varchar(255) not null,
+	created_at datetime default CURRENT_TIMESTAMP,
+	updated_at datetime default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
+);
 
 create table payments (
 	id int auto_increment primary key,
