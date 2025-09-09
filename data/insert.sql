@@ -37,26 +37,32 @@ INSERT INTO locations (name) VALUES
 ('Inle Lake');
 
 -- =======================
--- Packages (2 per category)
+-- Packages (2 per category, with corrected remaining_tickets & package_status)
 -- =======================
 INSERT INTO packages 
-(code, title, overview, category_id, location_id, departure_date, duration, total_tickets, remaining_tickets, unit_price, account_id)
+(code, title, overview, category_id, location_id, departure_date, duration, total_tickets, remaining_tickets, unit_price, account_id, package_status)
 VALUES
 -- Category 1 (Relaxation)
-('PKG-001', 'Adventure in Mountains', 'Explore the majestic mountains with guided tours.', 1, 1, '2025-10-01', 5, 20, 20, 500.00, 1),
-('PKG-002', 'Mountain Hiking Challenge', 'A thrilling hiking experience for adventure seekers.', 1, 2, '2025-11-05', 7, 15, 15, 650.00, 1),
+('PKG-001', 'Adventure in Mountains', 'Explore the majestic mountains with guided tours.', 1, 1, '2025-10-01', 5, 20, 18, 500.00, 1, 'AVAILABLE'),
+('PKG-002', 'Mountain Hiking Challenge', 'A thrilling hiking experience for adventure seekers.', 1, 2, '2025-11-05', 7, 15, 12, 650.00, 1, 'AVAILABLE'),
 
 -- Category 2 (Pagoda)
-('PKG-003', 'Beach Relaxation Getaway', 'Relax on pristine beaches with all-inclusive amenities.', 2, 3, '2025-09-15', 4, 30, 30, 400.00, 1),
-('PKG-004', 'Sunset Cruise Escape', 'Enjoy sunset cruises and beach parties.', 2, 4, '2025-10-20', 3, 25, 25, 350.00, 1),
+('PKG-003', 'Beach Relaxation Getaway', 'Relax on pristine beaches with all-inclusive amenities.', 2, 3, '2025-09-15', 4, 30, 29, 400.00, 1, 'AVAILABLE'),
+('PKG-004', 'Sunset Cruise Escape', 'Enjoy sunset cruises and beach parties.', 2, 4, '2025-10-20', 3, 25, 24, 350.00, 1, 'AVAILABLE'),
 
 -- Category 3 (Beach)
-('PKG-005', 'City Cultural Tour', 'Discover historical landmarks and local culture.', 3, 5, '2025-12-01', 6, 20, 20, 300.00, 1),
-('PKG-006', 'Nightlife Exploration', 'Experience the vibrant city nightlife and local cuisine.', 3, 6, '2025-12-10', 5, 15, 15, 320.00, 1),
+('PKG-005', 'City Cultural Tour', 'Discover historical landmarks and local culture.', 3, 5, '2025-12-01', 6, 20, 18, 300.00, 1, 'AVAILABLE'),
+('PKG-006', 'Nightlife Exploration', 'Experience the vibrant city nightlife and local cuisine.', 3, 6, '2025-12-10', 5, 15, 15, 320.00, 1, 'AVAILABLE'),
 
 -- Category 4 (History)
-('PKG-007', 'Ancient Pagoda Tour', 'Visit historic pagodas and learn about Burmese history.', 4, 2, '2025-11-12', 4, 25, 25, 450.00, 1),
-('PKG-008', 'Historical Yangon Walk', 'A walking tour through Yangon\'s historical sites.', 4, 1, '2025-12-05', 3, 20, 20, 280.00, 1);
+('PKG-007', 'Ancient Pagoda Tour', 'Visit historic pagodas and learn about Burmese history.', 4, 2, '2025-11-12', 4, 25, 25, 450.00, 1, 'AVAILABLE'),
+('PKG-008', 'Historical Yangon Walk', 'A walking tour through Yangon''s historical sites.', 4, 1, '2025-12-05', 3, 20, 20, 280.00, 1, 'AVAILABLE'),
+
+-- Extra Package: UNAVAILABLE (sold out)
+('PKG-009', 'Hidden Lakes Adventure', 'A secret journey to hidden lakes with full bookings.', 1, 6, '2025-11-20', 3, 10, 0, 600.00, 1, 'UNAVAILABLE'),
+
+-- Extra Package: FINISHED (departure already past)
+('PKG-010', 'Old Kingdom Exploration', 'Historic kingdom tour, already departed.', 4, 2, '2025-08-01', 4, 12, 5, 700.00, 1, 'FINISHED');
 
 -- =======================
 -- Bookings (5 random bookings)
@@ -82,7 +88,7 @@ INSERT INTO payment_types (name, payment_phone) VALUES
 -- Payments (5 sample payments)
 -- =======================
 INSERT INTO payments 
-(code, booking_id, status, account_id, payment_type_id)
+(code, booking_id, payment_status, account_id, payment_type_id)
 VALUES
 ('PAY-001', 1, 'PENDING', NULL, 1),
 ('PAY-002', 2, 'SUCCESS', 4, 2),
