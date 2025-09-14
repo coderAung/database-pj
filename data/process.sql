@@ -1,4 +1,4 @@
-use tour_booking_system;
+USE tour_booking_system;
 
 -- admin functions, procedures and triggers
 
@@ -37,7 +37,7 @@ CREATE PROCEDURE ConfirmPayment(
 )
 BEGIN
     DECLARE bookingId INT;
-    DECLARE currentStatus ENUM('PENDING','SUCCESS','FAIL');
+    DECLARE currentStatus varchar(10);
 
     -- 1. Get current payment info
     SELECT booking_id, payment_status
@@ -51,7 +51,7 @@ BEGIN
         -- 3. Update payment status to SUCCESS and record admin who confirmed
         UPDATE payments
         SET payment_status = 'SUCCESS',
-            account_id = adminId,
+            confirmed_by = adminId,
             updated_at = NOW()
         WHERE id = paymentId;
 
@@ -86,7 +86,7 @@ BEGIN
     -- Get the role of the account creating the package
     SELECT account_role INTO user_role
     FROM accounts
-    WHERE id = NEW.account_id;
+    WHERE id = NEW.admin_id;
 
     -- If not an ADMIN, throw an error
     IF user_role <> 'ADMIN' THEN
@@ -142,7 +142,7 @@ CREATE PROCEDURE CancelBooking(IN bookingId INT)
 BEGIN
     DECLARE pkgId INT;
     DECLARE tickets INT;
-    DECLARE current_status ENUM('PENDING','REQUESTING','RESERVED','CANCELLED');
+    DECLARE current_status varchar(15);
     DECLARE pkg_remaining INT;
 
     -- 1. Get booking info
@@ -178,6 +178,13 @@ BEGIN
             WHERE id = pkgId;
         END IF;
 
+        -- 6. Reset related payments
+        UPDATE payments
+        SET payment_status = 'PENDING',
+            confirmed_by = NULL,
+            updated_at = NOW()
+        WHERE booking_id = bookingId;
+
     ELSE
         -- Optional: raise an error if already cancelled
         SIGNAL SQLSTATE '45000'
@@ -203,7 +210,7 @@ BEGIN
     -- Get the role of the account making the booking
     SELECT account_role INTO user_role
     FROM accounts
-    WHERE id = NEW.account_id;
+    WHERE id = NEW.customer_id;
 
     -- If not a CUSTOMER, throw an error
     IF user_role <> 'CUSTOMER' THEN

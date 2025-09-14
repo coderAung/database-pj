@@ -1,20 +1,30 @@
 USE tour_booking_system;
 
 -- =======================
--- Admin Accounts
+-- Admin Accounts + Admin Details
 -- =======================
-INSERT INTO accounts (name, email, password, phone, account_role) VALUES
-('admin1', 'admin1@gmail.com', 'password', '09999888777', 'ADMIN'),
-('admin2', 'admin2@gmail.com', 'password', '09999888666', 'ADMIN');
+INSERT INTO accounts (email, password, account_role) VALUES
+('admin1@gmail.com', 'password', 'ADMIN'),
+('admin2@gmail.com', 'password', 'ADMIN');
+
+INSERT INTO admins (account_id, name, phone, address) VALUES
+(1, 'admin1', '09999888777', 'Yangon'),
+(2, 'admin2', '09999888666', 'Mandalay');
 
 -- =======================
--- Customer Accounts
+-- Customer Accounts + Customer Details
 -- =======================
-INSERT INTO accounts (name, email, password, phone) VALUES
-('Aung Aung', 'aung@gmail.com', 'password', '09777888777'),
-('Su Su', 'su@gmail.com', 'password', '09777888666'),
-('Moe Moe', 'moe@gmail.com', 'password', '09777888555'),
-('Hla Hla', 'hla@gmail.com', 'password', '09777888444');
+INSERT INTO accounts (email, password, account_role) VALUES
+('aung@gmail.com', 'password', 'CUSTOMER'),
+('su@gmail.com', 'password', 'CUSTOMER'),
+('moe@gmail.com', 'password', 'CUSTOMER'),
+('hla@gmail.com', 'password', 'CUSTOMER');
+
+INSERT INTO customers (account_id, name, phone, address) VALUES
+(3, 'Aung Aung', '09777888777', 'Yangon'),
+(4, 'Su Su', '09777888666', 'Mandalay'),
+(5, 'Moe Moe', '09777888555', 'Bagan'),
+(6, 'Hla Hla', '09777888444', 'Inle Lake');
 
 -- =======================
 -- Categories
@@ -37,10 +47,10 @@ INSERT INTO locations (name) VALUES
 ('Inle Lake');
 
 -- =======================
--- Packages (2 per category, with corrected remaining_tickets & package_status)
+-- Packages
 -- =======================
 INSERT INTO packages 
-(code, title, overview, category_id, location_id, departure_date, duration, total_tickets, remaining_tickets, unit_price, account_id, package_status)
+(code, title, overview, category_id, location_id, departure_date, duration, total_tickets, remaining_tickets, unit_price, admin_id, package_status)
 VALUES
 -- Category 1 (Relaxation)
 ('PKG-001', 'Adventure in Mountains', 'Explore the majestic mountains with guided tours.', 1, 1, '2025-10-01', 5, 20, 18, 500.00, 1, 'AVAILABLE'),
@@ -58,17 +68,17 @@ VALUES
 ('PKG-007', 'Ancient Pagoda Tour', 'Visit historic pagodas and learn about Burmese history.', 4, 2, '2025-11-12', 4, 25, 25, 450.00, 1, 'AVAILABLE'),
 ('PKG-008', 'Historical Yangon Walk', 'A walking tour through Yangon''s historical sites.', 4, 1, '2025-12-05', 3, 20, 20, 280.00, 1, 'AVAILABLE'),
 
--- Extra Package: UNAVAILABLE (sold out)
+-- Extra Package: UNAVAILABLE
 ('PKG-009', 'Hidden Lakes Adventure', 'A secret journey to hidden lakes with full bookings.', 1, 6, '2025-11-20', 3, 10, 0, 600.00, 1, 'UNAVAILABLE'),
 
--- Extra Package: FINISHED (departure already past)
+-- Extra Package: FINISHED
 ('PKG-010', 'Old Kingdom Exploration', 'Historic kingdom tour, already departed.', 4, 2, '2025-08-01', 4, 12, 5, 700.00, 1, 'FINISHED');
 
 -- =======================
--- Bookings (5 random bookings)
+-- Bookings
 -- =======================
 INSERT INTO bookings 
-(code, package_id, account_id, ticket_counts, unit_price, booking_status)
+(code, package_id, customer_id, ticket_counts, unit_price, booking_status)
 VALUES
 ('BOOK-001', 1, 3, 2, 500.00, 'PENDING'),
 ('BOOK-002', 3, 4, 1, 400.00, 'RESERVED'),
@@ -77,21 +87,21 @@ VALUES
 ('BOOK-005', 4, 3, 1, 350.00, 'CANCELLED');
 
 -- =======================
--- Payment Types
+-- Receiving Methods (with owner)
 -- =======================
-INSERT INTO payment_types (name, payment_phone) VALUES
-('KBZ Pay', '09990001111'),
-('Wave Pay', '09990002222'),
-('AYA Pay', '09990003333');
+INSERT INTO receiving_methods (name, receiving_phone, owner) VALUES
+('KBZ Pay', '09990001111', 'Admin1'),
+('Wave Pay', '09990002222', 'Admin1'),
+('AYA Pay', '09990003333', 'Admin2');
 
 -- =======================
--- Payments (5 sample payments)
+-- Payments
 -- =======================
 INSERT INTO payments 
-(code, booking_id, payment_status, account_id, payment_type_id)
+(code, booking_id, payment_status, confirmed_by, receiving_method_id)
 VALUES
 ('PAY-001', 1, 'PENDING', NULL, 1),
-('PAY-002', 2, 'SUCCESS', 4, 2),
-('PAY-003', 3, 'FAIL', 3, 1),
+('PAY-002', 2, 'SUCCESS', 1, 2), -- admin1 confirmed
+('PAY-003', 3, 'FAIL', 2, 1),    -- admin2 handled
 ('PAY-004', 4, 'PENDING', NULL, 3),
-('PAY-005', 5, 'SUCCESS', 3, 2);
+('PAY-005', 5, 'SUCCESS', 1, 2); -- admin1 confirmed
